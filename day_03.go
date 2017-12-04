@@ -51,12 +51,16 @@ func getNextDirection (old [2] int) [2] int {
 
 */
 
-func getSquares(num int) []Square {
+func getSquares(num int, sum bool) []Square {
+  /*
+    num: how many squares to make
+    sum: whether or not to use the "summation" method described in Part 2 of the problem
+  */
   grid := make([]Square, num)
   direction := [2]int{0, -1}
   // the change in coordinates + or - 1 or 0
-  var x, y int
-  // x and y are the locations of the squares
+  var x, y, value int
+  // x and y are the locations of the squares, value is the number it displays
   distance := 1
   // distance is how long it will keep going that direction
   distance_counter := 0
@@ -76,32 +80,57 @@ func getSquares(num int) []Square {
       direction = getNextDirection(direction)
       distance_counter = 0
       // change direction
-
     }
-    grid[i] = Square{x, y, i+1}
+
+
+    if sum {
+      if i == 0 {
+        value = 1
+      } else {
+        for j := 0; j < i - 1; j++ {
+          compare := grid[j]
+          if (compare.X >= x - 1 && compare.X <= x + 1) && (compare.Y >= y - 1 && compare.Y <= y + 1) {
+            value += compare.Value
+          }
+        }
+      }
+    } else {
+      value = i + 1
+    }
+    grid[i] = Square{x, y, value}
+
+    if sum && value > num {
+      grid := grid[0:i+1]
+      return grid
+    }
 
     // change x and y appropriately
     x += direction[0]
     y += direction[1]
     distance_counter++
-
   }
-
   return grid
 }
 
 func ManhattanDistanceForNumber(i int) int {
-  grid := getSquares(i)
+  grid := getSquares(i, false)
   return grid[i-1].ManhattanDistance()
 }
 
+
+
 func main() {
   fmt.Println("hello")
-  fmt.Println(getSquares(10))
 
   fmt.Println(ManhattanDistanceForNumber(1))
   fmt.Println(ManhattanDistanceForNumber(12))
   fmt.Println(ManhattanDistanceForNumber(23))
   fmt.Println(ManhattanDistanceForNumber(1024))
   fmt.Println(ManhattanDistanceForNumber(368078))
+
+  fmt.Println(getSquares(10, true)) // I ended up comparing this to https://oeis.org/A141481 when I was debugging
+
+  part2Grid := getSquares(368078, true)
+  fmt.Println(part2Grid[len(part2Grid)-1].Value)
+
 }
