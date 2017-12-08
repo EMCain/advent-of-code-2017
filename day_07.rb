@@ -21,8 +21,35 @@ def get_bottom(filename)
   return (parents - children).uniq
 end
 
-puts get_parents('test_inputs/day_07.txt')
-puts get_bottom('test_inputs/day_07.txt')
+test_parents = get_parents('test_inputs/day_07.txt')
+# puts get_bottom('test_inputs/day_07.txt')
+#
+parents = get_parents('inputs/day_07.txt')
+# puts get_bottom('inputs/day_07.txt')
 
-puts get_parents('inputs/day_07.txt')
-puts get_bottom('inputs/day_07.txt')
+# part 2
+
+def get_total_weight(filename, parents)
+  hash = {}
+  IO.foreach(filename) do | line |
+    match = /(?<disc>\w+) \((?<weight>\d+)\)/.match(line.strip)
+    if !match.nil?
+      p match.named_captures
+      name = match.named_captures['disc']
+      weight = match.named_captures['weight'].to_i
+      while parents.keys.include? name
+        if !hash.keys.include? name
+          hash[name] = 0
+        end
+        hash[name] += weight
+        puts name + " weighs " + hash[name].to_s
+
+        name = parents[name]
+
+      end
+    end
+  end
+  return hash
+end
+
+get_total_weight('test_inputs/day_07.txt', test_parents)
