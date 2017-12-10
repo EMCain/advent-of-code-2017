@@ -1,24 +1,28 @@
 def find_groups(text)
   # find groups
   groups = []
-  pattern = /(\{)(.*)(\}(?=[^\}]*)$)/
-  garbage_pattern = /(\<)(.*)(\>(?=[^\>]*)$)/
+  pattern = /((?<!\!)\{)(.*)((?<!\!)\}(?=[^\}]*)$)/
+  garbage_pattern = /^(\<.*\>(?=[^\>]*))$/
   match = pattern.match(text)
   puts match
   while !match.nil?
-    if !garbage_pattern.match(text)
+    puts "text " + text
+    puts "match " + match.captures.to_s
+    if !garbage_pattern.match(text).nil?
+      puts "garbage" + text
+      text.slice! garbage_pattern.match(text)
+    else
       groups.push(match.captures)
+      text.slice! match.captures[0]
+      text.slice! match.captures[2]
+      # text = match.captures[1]
+      match = pattern.match(text)
     end
-    text.slice! match.captures[0]
-    text.slice! match.captures[2]
-    puts "sliced " + text
-    match = pattern.match(text)
+
   end
   puts "groups is " + groups.to_s
   puts groups.length
-  # for each group
-    # call itself
-  # and there should probably be some kind of counter for the score??? idk
+  return groups
 end
 
 
