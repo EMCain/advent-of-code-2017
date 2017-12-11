@@ -17,7 +17,6 @@ func makeRing(size int) *ring.Ring {
 func hash(r *ring.Ring, input []int) *ring.Ring {
   skip := 0
   r.Do(func(x interface{}) {
-    fmt.Printf("%d ", x)
   })
   for i := 0; i < len(input); i++ {
     // create a sublist
@@ -32,7 +31,6 @@ func hash(r *ring.Ring, input []int) *ring.Ring {
     for j := 0; j < sublist_size; j++ {
       index := sublist_size - j - 1
       item := sublist[index]
-      fmt.Printf("\nIndex is %d, about to replace %d with item %d", index, r.Value.(int), item)
       r.Value = item
       r = r.Next()
     }
@@ -40,10 +38,6 @@ func hash(r *ring.Ring, input []int) *ring.Ring {
     for j:= 0; j < skip; j++ {
       r = r.Next()
     }
-    fmt.Printf("\nSublist is %v, skip is %d, ring is...", sublist, skip)
-    r.Do(func(x interface{}) {
-      fmt.Printf("%d ", x)
-    })
 
     skip++
   }
@@ -52,9 +46,14 @@ func hash(r *ring.Ring, input []int) *ring.Ring {
 
 func main() {
   smallR := makeRing(5)
-
-  smallR.Do(func (x interface{}) {
-    fmt.Println(x)
-  })
+  bigR := makeRing(256)
   hash(smallR, []int {3, 4, 1, 5})
+  hash(bigR, []int {130,126,1,11,140,2,255,207,18,254,246,164,29,104,0,224})
+  smallR.Do(func(x interface{}) {
+    fmt.Printf("%d ", x)
+  })
+  fmt.Println("\n-------------------")
+  bigR.Do(func(x interface{}) {
+    fmt.Printf("%d ", x)
+  })
 }
