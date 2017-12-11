@@ -65,7 +65,59 @@ func xorIntegers(input []int) int {
   return result
 }
 
-// eventually I'll be passing a Ring into this.
+func iterableHash(r *ring.Ring, input []int, skip int) *ring.Ring {
+  //very similar to the first one
+  r.Do(func(x interface{}) {
+  })
+  for i := 0; i < len(input); i++ {
+    // create a sublist
+    sublist_size := input[i]
+    rCopy := r // this is only used for reading the value
+    sublist := make([]int, sublist_size)
+    for j := 0; j < sublist_size; j++ {
+      sublist[j] = rCopy.Value.(int)
+      rCopy = rCopy.Next()
+    }
+    // reverse order the items of sublist and put them in ring
+    for j := 0; j < sublist_size; j++ {
+      index := sublist_size - j - 1
+      item := sublist[index]
+      r.Value = item
+      r = r.Next()
+    }
+    // advance "skip" times
+    for j:= 0; j < skip; j++ {
+      r = r.Next()
+    }
+
+    skip++
+  }
+  return r
+}
+
+func fullProcess(input string) string {
+  convertedInput := convertASCII(input)
+  var skip int
+  r:= makeRing(256)
+
+  // run 64 rounds
+  for i := 0; i < 64; i++ {
+    r = iterableHash(r, convertedInput, skip)
+  }
+
+  denseHashes := make([]int, 16)
+  for i := 0; i < 16; i ++ {
+    block := make([]int, 16)
+    for j := 0; j < 16; j++ {
+      block[j] = r.Value.(int)
+      r = r.Next()
+    }
+    denseHashes[i] = xorIntegers(block)
+  }
+
+  return hexString(denseHashes)
+}
+
 func hexString(input []int) string {
   var s string
   for i := 0; i < len(input); i++ {
@@ -93,4 +145,10 @@ func main() {
   fmt.Println("\n--hex test---")
 
   fmt.Println(hexString([]int{64, 7, 255}))
+
+  fmt.Println("\n--full test---")
+  fmt.Println(fullProcess(""))
+  fmt.Println(fullProcess("AoC 2017"))
+  fmt.Println(fullProcess("1,2,3"))
+  fmt.Println(fullProcess("1,2,4"))
 }
