@@ -16,22 +16,38 @@ func makeRing(size int) *ring.Ring {
 
 func hash(r *ring.Ring, input []int) *ring.Ring {
   skip := 0
-  newRing := ring.New(r.Len())
+  r.Do(func(x interface{}) {
+    fmt.Printf("%d ", x)
+  })
   for i := 0; i < len(input); i++ {
+    // create a sublist
     sublist_size := input[i]
+    rCopy := r // this is only used for reading the value
     sublist := make([]int, sublist_size)
     for j := 0; j < sublist_size; j++ {
-      sublist[j] = r.Value.(int)
+      sublist[j] = rCopy.Value.(int)
+      rCopy = rCopy.Next()
+    }
+    // reverse order the items of sublist and put them in ring
+    for j := 0; j < sublist_size; j++ {
+      index := sublist_size - j - 1
+      item := sublist[index]
+      fmt.Printf("\nIndex is %d, about to replace %d with item %d", index, r.Value.(int), item)
+      r.Value = item
       r = r.Next()
     }
-    fmt.Printf("%v", sublist)
-    // TODO reverse list; should I apply this to r rather than creating newRing?
+    // advance "skip" times
     for j:= 0; j < skip; j++ {
       r = r.Next()
     }
+    fmt.Printf("\nSublist is %v, skip is %d, ring is...", sublist, skip)
+    r.Do(func(x interface{}) {
+      fmt.Printf("%d ", x)
+    })
+
     skip++
   }
-  return newRing
+  return r
 }
 
 func main() {
