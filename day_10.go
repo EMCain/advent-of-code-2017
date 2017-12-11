@@ -44,6 +44,19 @@ func hash(r *ring.Ring, input []int) *ring.Ring {
   return r
 }
 
+// part 2
+
+func convertASCII(s string) []int {
+  result := make([]int, len(s))
+  // iterate over each character in the string
+  // add it to the int slice
+  for i := 0; i < len(s); i++ {
+    r := rune(s[i])
+    result[i] = int(r)
+  }
+  return append(result, []int{17, 31, 73, 47, 23}...)
+}
+
 func main() {
   smallR := makeRing(5)
   bigR := makeRing(256)
@@ -56,4 +69,5 @@ func main() {
   bigR.Do(func(x interface{}) {
     fmt.Printf("%d ", x)
   })
+  fmt.Printf("\nconverted: %v \n", convertASCII("1,2,3"))
 }
