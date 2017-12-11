@@ -57,6 +57,14 @@ func convertASCII(s string) []int {
   return append(result, []int{17, 31, 73, 47, 23}...)
 }
 
+func xorIntegers(input []int) int {
+  result := input[0]
+  for i := 1; i < len(input); i++ {
+    result = result ^ input[i]
+  }
+  return result
+}
+
 func main() {
   smallR := makeRing(5)
   bigR := makeRing(256)
@@ -70,4 +78,7 @@ func main() {
     fmt.Printf("%d ", x)
   })
   fmt.Printf("\nconverted: %v \n", convertASCII("1,2,3"))
+
+  fmt.Printf("\n%v\n\n", xorIntegers([]int {65, 27, 9, 1, 4, 3, 40, 50, 91, 7, 6, 0, 2, 5, 68, 22}))
+
 }
