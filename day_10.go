@@ -65,6 +65,15 @@ func xorIntegers(input []int) int {
   return result
 }
 
+// eventually I'll be passing a Ring into this.
+func hexString(input []int) string {
+  var s string
+  for i := 0; i < len(input); i++ {
+    s = fmt.Sprintf("%s%02x", s, input[i])
+  }
+  return s
+}
+
 func main() {
   smallR := makeRing(5)
   bigR := makeRing(256)
@@ -78,7 +87,10 @@ func main() {
     fmt.Printf("%d ", x)
   })
   fmt.Printf("\nconverted: %v \n", convertASCII("1,2,3"))
-
   fmt.Printf("\n%v\n\n", xorIntegers([]int {65, 27, 9, 1, 4, 3, 40, 50, 91, 7, 6, 0, 2, 5, 68, 22}))
 
+  // test the hex function
+  fmt.Println("\n--hex test---")
+
+  fmt.Println(hexString([]int{64, 7, 255}))
 }
